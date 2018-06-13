@@ -25,6 +25,6 @@ RUN chown -R 1001:1001 /opt/app-root
 # This default user is created in the openshift/base-centos7 image
 USER 1001
 
-EXPOSE 8080
+EXPOSE 3000
 
 CMD ["/usr/libexec/s2i/usage"]
