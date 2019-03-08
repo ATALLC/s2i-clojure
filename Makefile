@@ -1,3 +1,11 @@
 
+IMAGE_NAME = s2i-clojure
+
+.PHONY: build
 build:
-	oc new-build . --name=s2i-clojure
+	docker build -t $(IMAGE_NAME) .
+
+.PHONY: test
+test:
+	docker build -t $(IMAGE_NAME)-candidate .
+	IMAGE_NAME=$(IMAGE_NAME)-candidate test/run
