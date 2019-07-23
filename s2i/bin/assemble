@@ -25,5 +25,7 @@ mv /tmp/src ${HOME}/src
 echo "---> Building application from source..."
 
 pushd ${HOME}/src > /dev/null
-mv "$(${HOME}/lein uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" ${HOME}/app-standalone.jar
+${UBERJAR}
+echo "---> Artifact built from source..."
+mv ${ARTIFACT_PATH} ${HOME}/app-standalone.jar
 popd > /dev/null

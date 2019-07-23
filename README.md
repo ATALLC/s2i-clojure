@@ -1,7 +1,36 @@
 
 # Creating a basic S2I builder image  
 
+Originally forked from https://hub.docker.com/r/mpiech/s2i-clojure/
+
 ## Getting started  
+
+### Usage Dependencies
+
+- This image uses openjdk-8 and install clojure 1.10.1 and the latest stable release of leiningen.
+  - lein is installed in ${HOME} so to access it you have to do `${HOME}/lein`
+  in the environment variable
+- Each project that uses must define environment variables in an .s2i/environment file.
+  - The format for these is key-value ie. FOO=bar
+  - The variables required are:
+    - `UBERJAR=<command to create uberjar>`
+    - `ARTIFACT_PATH=<path to uberjar>`
+    - `RUN_JAR=<command to run uberjar>`
+- The JAR generated must end with `standalone.jar`
+- For specifying the run command, the uberjar will be moved to the home directory and the jar will be named `app-standalone.jar`
+  - ie. `java -jar ${HOME}/app-standalone.jar` was the original execution for this image. The RUN_JAR variable should use the same conventions.
+
+#### Example
+
+- If using lein to build uberjar use these values in `.s2i/environment`
+  - `UBERJAR=${HOME}/lein ring uberjar`
+  - `ARTIFACT_PATH=target/uberjar/<app-name.jar>`
+  - `RUN_JAR=java -jar ${HOME}/app-standalone.jar`
+- If using deps uberjar (https://github.com/tonsky/uberdeps/)
+  - `UBERJAR=clj -A:uberjar --target target/app-standalone.jar`
+  - `ARTIFACT_PATH=target/app-standalone.jar`
+  - `RUN_JAR= java -cp ${HOME}/app-standalone.jar clojure.main -m <main-namespace name>`
+
 
 ### Files and Directories  
 | File                   | Required? | Description                                                  |
@@ -28,15 +57,15 @@ Create an *assemble* script that will build our application, e.g.:
 The script can also specify a way to restore any saved artifacts from the previous image.   
 
 ##### run
-Create a *run* script that will start the application. 
+Create a *run* script that will start the application.
 
 ##### save-artifacts (optional)
 Create a *save-artifacts* script which allows a new build to reuse content from a previous version of the application image.
 
-##### usage (optional) 
+##### usage (optional)
 Create a *usage* script that will print out instructions on how to use the image.
 
-##### Make the scripts executable 
+##### Make the scripts executable
 Make sure that all of the scripts are executable by running *chmod +x s2i/bin/**
 
 #### Create the builder image
@@ -63,7 +92,7 @@ The following command will create the application image:
 s2i build test/test-app s2i-clojure s2i-clojure-app
 ---> Building and installing application from source...
 ```
-Using the logic defined in the *assemble* script, s2i will now create an application image using the builder image as a base and including the source code from the test/test-app directory. 
+Using the logic defined in the *assemble* script, s2i will now create an application image using the builder image as a base and including the source code from the test/test-app directory.
 
 #### Running the application image
 Running the application image is as simple as invoking the docker run command:
