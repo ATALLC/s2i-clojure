@@ -7,7 +7,7 @@ pool:
 steps:
 - task: Docker@2
   inputs:
-    containerRegistry: 'SoSOA Docker Registry'
+    containerRegistry: 'ATALLC Docker Registry'
     repository: 's2i-clojure'
     tags: 'latest'
     command: 'buildAndPush'
