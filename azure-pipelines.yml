@@ -9,17 +9,10 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  imageName: 's2i-clojure'
-  dockerId: sosoaDockerRegistry
-
 steps:
-- script: docker build -t $(dockerId).azurecr.io/$(imageName) .
-  displayName: 'Build docker image'
-
-- script: |
-   docker login -u $(dockerId) -p $PSWD $(dockerId).azurecr.io
-   docker push $(dockerId).azurecr.io/$(imageName)
-  displayName: pushing docker image to docker container registry
-  env:
-    PSWD: $(dockerPassword)
+- task: Docker@2
+  inputs:
+    containerRegistry: 'ATALLC Docker Registry'
+    repository: 's2i-clojure'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
