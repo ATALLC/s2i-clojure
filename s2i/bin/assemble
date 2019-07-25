@@ -7,25 +7,43 @@
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
 
+function build_artifact() {
+	# Restore artifacts from the previous build (if they exist).
+	#
+	if [ -d /tmp/artifacts/.m2 ]; then
+	  echo "---> Restoring build artifacts..."
+	  mv /tmp/artifacts/.m2 ${HOME}/
+	fi
+
+	echo "---> Building application from source..."
+
+	pushd ${HOME}/src > /dev/null
+	${UBERJAR}
+	echo "---> Artifact built from source..."
+	mv ${ARTIFACT_PATH} ${HOME}/app-standalone.jar
+	popd > /dev/null
+}
+
 # If the 's2i-clojure' assemble script is executed with the '-h' flag, print the usage.
 if [[ "$1" == "-h" ]]; then
 	exec /usr/libexec/s2i/usage
 fi
 
-# Restore artifacts from the previous build (if they exist).
-#
-if [ -d /tmp/artifacts/.m2 ]; then
-  echo "---> Restoring build artifacts..."
-  mv /tmp/artifacts/.m2 ${HOME}/
-fi
+echo "---> Environment Variables: "
+echo "---> UBERJAR=$UBERJAR"
+echo "---> INSTALL_ARTIFACT=$INSTALL_ARTIFACT"
+echo "---> ARTIFACT_PATH=$ARTIFACT_PATH"
+echo "---> RUN_JAR=$RUN_JAR"
+echo "---> "
 
 echo "---> Installing application source..."
 mv /tmp/src ${HOME}/src
 
-echo "---> Building application from source..."
-
-pushd ${HOME}/src > /dev/null
-${UBERJAR}
-echo "---> Artifact built from source..."
-mv ${ARTIFACT_PATH} ${HOME}/app-standalone.jar
-popd > /dev/null
+if [[ -n ${INSTALL_ARTIFACT} ]]; then
+	pushd ${HOME}/src > /dev/null
+	echo "---> Moving artifact to home path..."
+	mv ${ARTIFACT_PATH} ${HOME}/app-standalone.jar
+	popd > /dev/null
+else
+	build_artifact
+fi

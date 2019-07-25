@@ -7,8 +7,9 @@ Originally forked from https://hub.docker.com/r/mpiech/s2i-clojure/
 
 ### Usage Dependencies
 
+#### Building
 - This image uses openjdk-8 and install clojure 1.10.1 and the latest stable release of leiningen.
-  - lein is installed in ${HOME} so to access it you have to do `${HOME}/lein`
+  - lein is installed in `${HOME}` so to access it you have to do `${HOME}/lein`
   in the environment variable
 - Each project that uses must define environment variables in an .s2i/environment file.
   - The format for these is key-value ie. FOO=bar
@@ -20,6 +21,13 @@ Originally forked from https://hub.docker.com/r/mpiech/s2i-clojure/
 - For specifying the run command, the uberjar will be moved to the home directory and the jar will be named `app-standalone.jar`
   - ie. `java -jar ${HOME}/app-standalone.jar` was the original execution for this image. The RUN_JAR variable should use the same conventions.
 
+#### Installing Artifact Only
+ - Another option is to just install an artifact into the image.
+ - The variables required are:
+   - `INSTALL_ARTIFACT=true`
+   - `ARTIFACT_PATH=<path to uberjar>`
+   - `RUN_JAR=<command to run uberjar>`
+
 #### Example
 
 - If using lein to build uberjar use these values in `.s2i/environment`
@@ -28,6 +36,10 @@ Originally forked from https://hub.docker.com/r/mpiech/s2i-clojure/
   - `RUN_JAR=java -jar ${HOME}/app-standalone.jar`
 - If using deps uberjar (https://github.com/tonsky/uberdeps/)
   - `UBERJAR=clj -A:uberjar --target target/app-standalone.jar`
+  - `ARTIFACT_PATH=target/app-standalone.jar`
+  - `RUN_JAR= java -cp ${HOME}/app-standalone.jar clojure.main -m <main-namespace name>`
+- If using artifact only deploy (Main difference is lack of UBERJAR environment value)
+  - `INSTALL_ARTIFACT=true`
   - `ARTIFACT_PATH=target/app-standalone.jar`
   - `RUN_JAR= java -cp ${HOME}/app-standalone.jar clojure.main -m <main-namespace name>`
 
