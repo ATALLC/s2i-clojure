@@ -32,7 +32,7 @@ Originally forked from https://hub.docker.com/r/mpiech/s2i-clojure/
 
 - If using lein to build uberjar use these values in `.s2i/environment`
   - `UBERJAR=${HOME}/lein ring uberjar`
-  - `ARTIFACT_PATH=target/uberjar/<app-name.jar>`
+  - `ARTIFACT_PATH=/opt/app-root/src/src/target/uberjar/*standalone.jar`
   - `RUN_JAR=java -jar ${HOME}/app-standalone.jar`
 - If using deps uberjar (https://github.com/tonsky/uberdeps/)
   - `UBERJAR=clj -A:uberjar --target target/app-standalone.jar`
@@ -43,6 +43,8 @@ Originally forked from https://hub.docker.com/r/mpiech/s2i-clojure/
   - `ARTIFACT_PATH=target/app-standalone.jar`
   - `RUN_JAR= java -cp ${HOME}/app-standalone.jar clojure.main -m <main-namespace name>`
 
+#### Troubleshooting
+  - Do not use ${HOME} in ARTIFACT_PATH. It is not set up to expand that out.
 
 ### Files and Directories  
 | File                   | Required? | Description                                                  |
