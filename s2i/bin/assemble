@@ -18,7 +18,7 @@ function build_artifact() {
 	echo "---> Building application from source..."
 
 	pushd ${HOME}/src > /dev/null
-	${UBERJAR}
+	eval ${UBERJAR}
 	echo "---> Artifact built from source..."
 	mv ${ARTIFACT_PATH} ${HOME}/app-standalone.jar
 	popd > /dev/null
