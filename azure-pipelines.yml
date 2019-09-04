@@ -2,11 +2,11 @@ trigger:
 - master
 
 stages:
-- stage: Build
-  displayName: Build and push stage
+- stage: BuildStage
+  displayName: Build stage
   jobs:
   - job: BuildJob
-    displayName: 'Build Image'
+    displayName: 'Build job'
     pool:
       name: Default
     steps:
