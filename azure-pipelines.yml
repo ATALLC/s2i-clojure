@@ -1,9 +1,6 @@
 trigger:
 - master
 
-pool:
-  name: 'Default'
-
 stages:
 - stage: Build
   displayName: Build and push stage
