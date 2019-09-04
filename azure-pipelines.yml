@@ -2,13 +2,21 @@ trigger:
 - master
 
 pool:
-  name: 'mgAgentPool'
+  name: 'Default'
 
-steps:
-- task: Docker@2
-  inputs:
-    containerRegistry: 'ATALLC Docker Registry'
-    repository: 's2i-clojure'
-    tags: 'latest'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: BuildJob
+    displayName: 'Build Image'
+    pool:
+      name: Default
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'ATALLC Docker Registry'
+        repository: 's2i-clojure'
+        tags: 'latest'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
