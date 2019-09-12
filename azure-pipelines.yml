@@ -10,8 +10,8 @@ stages:
     steps:
     - task: Docker@2
       inputs:
-        containerRegistry: 'ATALLC Docker Registry'
+        containerRegistry: 'atalld-acr-connection'
         repository: 's2i-clojure'
-        tags: 'latest'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
+        tags: 'latest'
