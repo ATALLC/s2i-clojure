@@ -7,8 +7,6 @@ stages:
   jobs:
   - job: BuildJob
     displayName: 'Build job'
-    pool:
-      name: Default
     steps:
     - task: Docker@2
       inputs:
