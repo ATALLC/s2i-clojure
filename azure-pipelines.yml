@@ -15,3 +15,7 @@ stages:
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
         tags: 'latest'
+
+    - script: |
+        docker system prune -a -f
+      displayName: Prune dangling Docker images
